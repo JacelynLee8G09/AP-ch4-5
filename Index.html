@@ -1,0 +1,788 @@
+Physics ap · HTML
+Copy
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Physics AP — Chapter 4 & 5</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,700&family=DM+Sans:wght@300;400;500;600&family=DM+Mono&display=swap" rel="stylesheet"/>
+<style>
+:root {
+  --rose:    #ff2d78;
+  --pink:    #ff6eb4;
+  --blush:   #ffb3d1;
+  --hot:     #e0005e;
+  --bg:      #0d0008;
+  --surface: #180011;
+  --card:    #22001a;
+  --border:  rgba(255,110,180,.18);
+  --text:    #ffe8f3;
+  --muted:   #c98faa;
+  --white:   #ffffff;
+}
+*, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+html { scroll-behavior: smooth; }
+body {
+  font-family: 'DM Sans', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  overflow-x: hidden;
+  cursor: none;
+}
+.cursor {
+  width:14px; height:14px; background:var(--rose); border-radius:50%;
+  position:fixed; pointer-events:none; z-index:9999;
+  transform:translate(-50%,-50%); mix-blend-mode:screen;
+  transition:width .2s, height .2s;
+}
+.cursor-ring {
+  width:36px; height:36px; border:1.5px solid var(--pink); border-radius:50%;
+  position:fixed; pointer-events:none; z-index:9998;
+  transform:translate(-50%,-50%);
+  transition:left .12s ease, top .12s ease;
+}
+body::before {
+  content:''; position:fixed; inset:0; z-index:0; pointer-events:none;
+  background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.04'/%3E%3C/svg%3E");
+  opacity:.4;
+}
+nav {
+  position:fixed; top:0; left:0; right:0; z-index:100;
+  display:flex; align-items:center; justify-content:space-between;
+  padding:1rem 2.5rem;
+  background:rgba(13,0,8,.85); backdrop-filter:blur(20px);
+  border-bottom:1px solid var(--border);
+}
+.nav-logo {
+  font-family:'Playfair Display',serif; font-size:1.05rem;
+  background:linear-gradient(90deg,var(--rose),var(--blush));
+  -webkit-background-clip:text; -webkit-text-fill-color:transparent;
+}
+.nav-links { display:flex; gap:2rem; }
+.nav-links a {
+  color:var(--muted); text-decoration:none; font-size:.8rem;
+  letter-spacing:.07em; text-transform:uppercase; font-weight:500; transition:color .2s;
+}
+.nav-links a:hover { color:var(--blush); }
+@media(max-width:600px){ .nav-links{display:none;} }
+
+/* HERO */
+.hero {
+  min-height:100vh; display:flex; flex-direction:column;
+  align-items:center; justify-content:center;
+  text-align:center; padding:7rem 2rem 4rem;
+  position:relative; overflow:hidden;
+}
+.blob {
+  position:absolute; border-radius:50%; filter:blur(90px); pointer-events:none; z-index:0;
+  animation:drift 12s ease-in-out infinite alternate;
+}
+.b1{width:600px;height:600px;background:rgba(255,45,120,.2);top:-200px;left:-150px;}
+.b2{width:420px;height:420px;background:rgba(255,110,180,.13);top:40%;right:-80px;animation-delay:-5s;}
+.b3{width:360px;height:360px;background:rgba(224,0,94,.16);bottom:-80px;left:28%;animation-delay:-9s;}
+@keyframes drift{from{transform:translate(0,0) scale(1)}to{transform:translate(35px,25px) scale(1.08)}}
+.sparkles{position:absolute;inset:0;pointer-events:none;z-index:0;}
+.spark{position:absolute;color:var(--blush);opacity:0;animation:twinkle ease-in-out infinite;}
+@keyframes twinkle{0%,100%{opacity:0;transform:scale(0) rotate(0deg)}50%{opacity:.65;transform:scale(1) rotate(180deg)}}
+.hero-inner{position:relative;z-index:1;max-width:880px;}
+.eyebrow {
+  display:inline-flex; align-items:center; gap:.5rem;
+  background:rgba(255,110,180,.1); border:1px solid rgba(255,110,180,.3);
+  border-radius:999px; padding:.4rem 1.2rem; margin-bottom:2rem;
+  font-size:.72rem; letter-spacing:.12em; text-transform:uppercase; color:var(--blush); font-weight:600;
+}
+.hero h1 {
+  font-family:'Playfair Display',serif; font-size:clamp(3.5rem,9vw,7rem);
+  font-weight:900; line-height:1.0; color:var(--white);
+  text-shadow:0 0 80px rgba(255,45,120,.35); margin-bottom:.4rem;
+}
+.hero h1 em {
+  font-style:italic;
+  background:linear-gradient(135deg,var(--rose),var(--blush),var(--rose));
+  background-size:200%;
+  -webkit-background-clip:text; -webkit-text-fill-color:transparent;
+  animation:shimmer 3s linear infinite;
+}
+@keyframes shimmer{0%{background-position:0%}100%{background-position:200%}}
+.hero-sub{font-size:1.05rem;color:var(--muted);line-height:1.8;margin:1.4rem auto 2.5rem;max-width:580px;}
+.pill-row{display:flex;flex-wrap:wrap;gap:.6rem;justify-content:center;margin-bottom:3rem;}
+.pill {
+  padding:.4rem 1.1rem; border-radius:999px; font-size:.78rem; font-weight:600;
+  border:1px solid rgba(255,110,180,.35); background:rgba(255,110,180,.1);
+  color:var(--blush); transition:all .25s;
+}
+.pill:hover{background:rgba(255,45,120,.25);transform:translateY(-2px);}
+.hero-cta{display:flex;gap:1rem;justify-content:center;flex-wrap:wrap;}
+.btn{
+  padding:.8rem 2.2rem; border-radius:14px; font-size:.9rem; font-weight:600;
+  text-decoration:none; transition:all .25s; display:inline-flex; align-items:center; gap:.5rem;
+}
+.btn-solid{
+  background:linear-gradient(135deg,var(--rose),var(--hot));
+  color:#fff; border:none; box-shadow:0 6px 30px rgba(255,45,120,.4);
+}
+.btn-solid:hover{transform:translateY(-3px);box-shadow:0 14px 40px rgba(255,45,120,.55);}
+.btn-outline{background:transparent;color:var(--blush);border:1.5px solid rgba(255,110,180,.4);}
+.btn-outline:hover{background:rgba(255,110,180,.1);transform:translateY(-3px);}
+.scroll-down {
+  position:absolute; bottom:2rem; left:50%; transform:translateX(-50%);
+  display:flex; flex-direction:column; align-items:center; gap:.5rem;
+  color:var(--muted); font-size:.68rem; letter-spacing:.1em; text-transform:uppercase;
+  animation:bob 2.5s ease-in-out infinite; z-index:1;
+}
+@keyframes bob{0%,100%{transform:translateX(-50%) translateY(0)}50%{transform:translateX(-50%) translateY(8px)}}
+.scroll-line{width:1px;height:40px;background:linear-gradient(to bottom,var(--rose),transparent);}
+
+/* SECTION */
+.section{padding:5.5rem 2rem;max-width:1120px;margin:0 auto;position:relative;z-index:1;}
+.sec-label{font-size:.7rem;letter-spacing:.16em;text-transform:uppercase;color:var(--rose);margin-bottom:.5rem;font-weight:700;}
+.sec-title{font-family:'Playfair Display',serif;font-size:clamp(2rem,5vw,3rem);font-weight:900;margin-bottom:1rem;line-height:1.1;text-shadow:0 0 50px rgba(255,45,120,.3);}
+.sec-desc{color:var(--muted);line-height:1.75;max-width:560px;margin-bottom:3rem;}
+
+/* INTRO */
+.intro-grid{display:grid;grid-template-columns:1fr 1fr;gap:1.2rem;}
+@media(max-width:680px){.intro-grid{grid-template-columns:1fr;}}
+.icard{
+  background:var(--card); border:1px solid var(--border); border-radius:22px; padding:1.8rem;
+  position:relative; overflow:hidden; transition:all .35s;
+}
+.icard:hover{transform:translateY(-5px);border-color:rgba(255,110,180,.4);box-shadow:0 20px 55px rgba(255,45,120,.14);}
+.icard.span2{grid-column:span 2;display:flex;gap:2rem;align-items:center;}
+@media(max-width:680px){.icard.span2{grid-column:span 1;flex-direction:column;}}
+.icard:nth-child(1){border-top:3px solid var(--rose);}
+.icard:nth-child(2){border-top:3px solid var(--pink);}
+.icard:nth-child(3){border-top:3px solid var(--blush);}
+.icard:nth-child(4){border-top:3px solid var(--hot);}
+.icard:nth-child(5){border-top:3px solid var(--rose);}
+.icard-img{width:190px;height:140px;object-fit:cover;border-radius:14px;flex-shrink:0;border:1.5px solid var(--border);}
+@media(max-width:680px){.icard-img{width:100%;height:170px;}}
+.icard-icon{font-size:2.2rem;margin-bottom:.8rem;}
+.icard h3{font-family:'Playfair Display',serif;font-size:1.15rem;margin-bottom:.6rem;color:var(--white);}
+.icard p{color:var(--muted);font-size:.87rem;line-height:1.75;}
+
+/* TABS */
+.tabs{display:flex;gap:.5rem;flex-wrap:wrap;margin-bottom:2.5rem;}
+.tab-btn{
+  padding:.55rem 1.5rem; border-radius:999px; border:1.5px solid var(--border);
+  background:transparent; color:var(--muted); cursor:pointer; font-size:.82rem; font-weight:600;
+  font-family:'DM Sans',sans-serif; letter-spacing:.04em; transition:all .22s;
+}
+.tab-btn.active,.tab-btn:hover{
+  background:linear-gradient(135deg,var(--rose),var(--hot));
+  color:#fff; border-color:transparent; box-shadow:0 4px 20px rgba(255,45,120,.4);
+}
+.tab-content{display:none;}
+.tab-content.active{display:block;}
+.topic-panel{display:grid;grid-template-columns:1fr 1fr;gap:1.3rem;}
+@media(max-width:700px){.topic-panel{grid-template-columns:1fr;}}
+.tcard{
+  background:var(--card); border:1px solid var(--border); border-radius:22px;
+  overflow:hidden; transition:all .32s;
+}
+.tcard:hover{transform:translateY(-5px);box-shadow:0 20px 55px rgba(255,45,120,.15);border-color:rgba(255,110,180,.35);}
+.tcard-photo{
+  width:100%; height:190px; object-fit:cover; display:block;
+  border-bottom:1px solid var(--border);
+  filter:saturate(1.1) brightness(.85); transition:transform .4s ease,filter .3s;
+}
+.tcard:hover .tcard-photo{transform:scale(1.05);filter:saturate(1.3) brightness(1);}
+.tcard-body{padding:1.5rem;}
+.tcard-body h3{font-family:'Playfair Display',serif;font-size:1.05rem;margin-bottom:.7rem;color:var(--white);}
+.tcard-body p{color:var(--muted);font-size:.85rem;line-height:1.72;}
+.tcard-body ul{list-style:none;margin-top:.9rem;}
+.tcard-body ul li{
+  color:var(--muted);font-size:.83rem;padding:.28rem 0;
+  border-bottom:1px solid rgba(255,110,180,.07);
+  display:flex;gap:.5rem;align-items:flex-start;
+}
+.tcard-body ul li::before{content:'✦';color:var(--rose);flex-shrink:0;font-size:.6rem;margin-top:4px;}
+.tcard-body ul li:last-child{border-bottom:none;}
+.fpill{
+  margin-top:1rem;display:inline-block;
+  background:rgba(255,45,120,.1);border:1px solid rgba(255,45,120,.3);
+  border-radius:10px;padding:.5rem .9rem;
+  font-family:'DM Mono',monospace;font-size:.88rem;color:var(--blush);
+}
+
+/* FORMULAS */
+.formula-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:1.1rem;}
+.fcard{
+  background:var(--card);border:1px solid var(--border);border-radius:22px;
+  padding:1.8rem;text-align:center;transition:all .3s;position:relative;overflow:hidden;
+}
+.fcard::before{
+  content:'';position:absolute;top:0;left:0;right:0;height:2px;
+  background:linear-gradient(90deg,var(--rose),var(--blush),var(--rose));
+  background-size:200%;animation:shimmer 3s linear infinite;
+}
+.fcard:hover{transform:translateY(-5px);box-shadow:0 16px 50px rgba(255,45,120,.16);}
+.fcard-emoji{font-size:2rem;margin-bottom:.8rem;}
+.fcard h4{font-family:'Playfair Display',serif;font-size:1rem;color:var(--white);margin-bottom:.5rem;}
+.fcard-eq{
+  font-family:'DM Mono',monospace;font-size:1.4rem;color:var(--rose);
+  background:rgba(255,45,120,.09);border-radius:12px;padding:.65rem 1rem;
+  margin:.8rem 0;border:1px solid rgba(255,45,120,.2);
+  text-shadow:0 0 20px rgba(255,45,120,.4);
+}
+.fcard p{color:var(--muted);font-size:.78rem;line-height:1.65;}
+
+/* EXERCISES */
+.ex-list{display:flex;flex-direction:column;gap:1rem;}
+.ex-card{
+  background:var(--card);border:1px solid var(--border);
+  border-radius:18px;overflow:hidden;transition:border-color .25s;cursor:pointer;
+}
+.ex-card:hover{border-color:rgba(255,110,180,.4);}
+.ex-head{display:flex;align-items:center;justify-content:space-between;padding:1.3rem 1.8rem;gap:1rem;}
+.ex-q{font-size:.9rem;font-weight:600;color:var(--text);}
+.ex-meta{display:flex;align-items:center;gap:.6rem;flex-shrink:0;}
+.ex-tag{
+  font-size:.7rem;padding:.22rem .7rem;border-radius:999px;
+  background:rgba(255,45,120,.12);color:var(--blush);
+  border:1px solid rgba(255,45,120,.25);white-space:nowrap;font-weight:600;
+}
+.chev{color:var(--muted);transition:transform .25s;font-size:.85rem;}
+.chev.open{transform:rotate(180deg);}
+.ex-body{display:none;padding:0 1.8rem 1.4rem;font-size:.87rem;color:var(--muted);line-height:1.8;}
+.ex-body.open{display:block;}
+.ex-ans{
+  margin-top:.8rem;
+  background:rgba(255,110,180,.07);border-left:3px solid var(--rose);
+  border-radius:0 12px 12px 0;padding:.8rem 1.1rem;
+  font-family:'DM Mono',monospace;font-size:.87rem;color:var(--blush);
+}
+
+/* TEAM */
+.team-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:1.1rem;}
+.team-card{
+  background:var(--card);border:1px solid var(--border);border-radius:22px;
+  padding:2rem 1.6rem;text-align:center;transition:all .3s;
+}
+.team-card:hover{transform:translateY(-6px);box-shadow:0 20px 55px rgba(255,45,120,.2);border-color:rgba(255,110,180,.4);}
+.ava{
+  width:64px;height:64px;border-radius:18px;margin:0 auto 1rem;
+  display:flex;align-items:center;justify-content:center;font-size:1.8rem;
+  background:linear-gradient(135deg,rgba(255,45,120,.25),rgba(255,110,180,.15));
+  border:1.5px solid rgba(255,110,180,.3);
+}
+.team-name{font-family:'Playfair Display',serif;font-size:1rem;color:var(--white);margin-bottom:.3rem;}
+.team-no{font-size:.75rem;color:var(--rose);margin-bottom:.7rem;font-weight:600;letter-spacing:.05em;}
+.role-pills{display:flex;gap:.4rem;flex-wrap:wrap;justify-content:center;}
+.role-pill{
+  font-size:.68rem;padding:.2rem .65rem;border-radius:999px;
+  background:rgba(255,110,180,.1);color:var(--blush);
+  border:1px solid rgba(255,110,180,.25);font-weight:600;
+}
+.line-div{height:1px;background:linear-gradient(90deg,transparent,rgba(255,110,180,.3),transparent);max-width:1120px;margin:0 auto;}
+footer{text-align:center;padding:3.5rem 2rem;color:var(--muted);font-size:.8rem;line-height:2.2;}
+footer strong{color:var(--blush);}
+</style>
+</head>
+<body>
+
+<div class="cursor" id="cur"></div>
+<div class="cursor-ring" id="ring"></div>
+
+<nav>
+  <div class="nav-logo">Physics AP ✦</div>
+  <div class="nav-links">
+    <a href="#intro">Intro</a>
+    <a href="#topics">Topics</a>
+    <a href="#formulas">Formulas</a>
+    <a href="#exercises">Exercises</a>
+    <a href="#team">Team</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="blob b1"></div>
+  <div class="blob b2"></div>
+  <div class="blob b3"></div>
+  <div class="sparkles" id="sparkles"></div>
+  <div class="hero-inner">
+    <div class="eyebrow">✦ Santa Laurensia Junior High · Class 9B · 2025/2026</div>
+    <h1>Physics <em>AP</em><br/>Chapter 4 & 5</h1>
+    <p class="hero-sub">Static Electricity · Magnetism · Measurement · Thermal Physics<br/>A vibrant study guide by the girls of 9B 🩷</p>
+    <div class="pill-row">
+      <span class="pill">⚡ Static Electricity</span>
+      <span class="pill">🧲 Magnetism</span>
+      <span class="pill">📏 Measurement</span>
+      <span class="pill">🌡️ Thermal Physics</span>
+    </div>
+    <div class="hero-cta">
+      <a href="#intro" class="btn btn-solid">Start Exploring →</a>
+      <a href="#exercises" class="btn btn-outline">Practice Questions</a>
+    </div>
+  </div>
+  <div class="scroll-down"><div class="scroll-line"></div><span>scroll</span></div>
+</section>
+
+<!-- INTRO -->
+<div id="intro" class="section">
+  <div class="sec-label">Background</div>
+  <div class="sec-title">What We're Studying</div>
+  <p class="sec-desc">Physics connects the invisible forces of our universe to the everyday world. This module explores four interconnected pillars of the AP Physics syllabus.</p>
+  <div class="intro-grid">
+    <div class="icard span2">
+      <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/d/d3/Lightning_over_Oradea_Romania_2.jpg/1280px-Lightning_over_Oradea_Romania_2.jpg" alt="Lightning storm" class="icard-img" onerror="this.style.display='none'"/>
+      <div>
+        <div class="icard-icon">🌍</div>
+        <h3>Why Physics Matters</h3>
+        <p>Physics is the language the universe speaks. From the spark of lightning to the warmth of sunlight, every phenomenon traces back to fundamental forces and energy. Understanding electricity, magnetism, heat, and measurement equips us to explain — and engineer — the world around us. This module bridges abstract equations with real, tangible experiences in your daily life.</p>
+      </div>
+    </div>
+    <div class="icard">
+      <div class="icard-icon">⚡</div>
+      <h3>Static Electricity</h3>
+      <p>Born from unbalanced charges, static electricity makes hair stand up, balloons cling to walls, and lightning tear through the sky. Atoms — with protons, neutrons, and electrons — are the source of all electric phenomena.</p>
+    </div>
+    <div class="icard">
+      <div class="icard-icon">🧲</div>
+      <h3>Magnetism</h3>
+      <p>Magnetism arises from moving charges within atoms. When domains in iron or cobalt align, a magnet is born. Link electricity and magnetism, and you get electromagnetism — the force behind motors, speakers, and MRI machines.</p>
+    </div>
+    <div class="icard">
+      <div class="icard-icon">📏</div>
+      <h3>Measurement</h3>
+      <p>Science demands precision. The International System of Units (SI) gives researchers a shared language — meters, kilograms, Kelvin — to compare and replicate results across the globe.</p>
+    </div>
+    <div class="icard">
+      <div class="icard-icon">🌡️</div>
+      <h3>Thermal Physics</h3>
+      <p>Heat, temperature, and energy flow explain why oceans moderate climate, why sweat cools us, and how fridges work. Thermal physics bridges particle-level motion to the macroscopic world we experience every day.</p>
+    </div>
+  </div>
+</div>
+
+<div class="line-div"></div>
+
+<!-- TOPICS -->
+<div id="topics" class="section">
+  <div class="sec-label">Core Content</div>
+  <div class="sec-title">Topic Deep‑Dives</div>
+  <p class="sec-desc">Select a chapter to explore its key concepts, illustrated with real photographs.</p>
+
+  <div class="tabs">
+    <button class="tab-btn active" onclick="showTab('e',this)">⚡ Static Electricity</button>
+    <button class="tab-btn" onclick="showTab('m',this)">🧲 Magnetism</button>
+    <button class="tab-btn" onclick="showTab('ms',this)">📏 Measurement</button>
+    <button class="tab-btn" onclick="showTab('t',this)">🌡️ Thermal Physics</button>
+  </div>
+
+  <!-- ELECTRICITY -->
+  <div id="tab-e" class="tab-content active">
+    <div class="topic-panel">
+      <div class="tcard">
+        <img class="tcard-photo" src="https://cdn.zmescience.com/wp-content/uploads/2015/05/1379398021_lightning-wallpaper.jpg" alt="Lightning — electric fields" onerror="this.style.height='60px';this.style.objectFit='contain';"/>
+        <div class="tcard-body">
+          <h3>⚡ Electric Fields & Lightning</h3>
+          <p>In storm clouds, colliding ice particles transfer charge, building enormous electric fields. When strong enough — lightning strikes. Coulomb's Law at planetary scale.</p>
+          <div class="fpill">F = k · q₁q₂ / r²</div>
+        </div>
+      </div>
+      <div class="tcard">
+        <img class="tcard-photo" src="https://static.wikia.nocookie.net/kardashev/images/4/4f/Atom2.png/revision/latest/scale-to-width-down/568?cb=20250409212604" alt="Atom structure" onerror="this.style.height='60px';this.style.objectFit='contain';"/>
+        <div class="tcard-body">
+          <h3>⚛️ Inside an Atom</h3>
+          <ul>
+            <li>Protons (+1.6×10⁻¹⁹ C) & neutrons in nucleus</li>
+            <li>Electrons (−1.6×10⁻¹⁹ C) orbit the nucleus</li>
+            <li>Neutral atom: equal protons & electrons</li>
+            <li>Ion: atom with a net charge</li>
+            <li>Conductors let charge flow; insulators resist</li>
+          </ul>
+        </div>
+      </div>
+      <div class="tcard">
+        <img class="tcard-photo" src="https://www.physicsclassroom.com/Class/estatics/u8l2b1.gif" alt="Charging by induction" onerror="this.style.height='60px';this.style.objectFit='contain';"/>
+        <div class="tcard-body">
+          <h3>🔄 Methods of Charging</h3>
+          <ul>
+            <li><strong style="color:var(--blush)">Friction:</strong> electrons transfer when rubbed</li>
+            <li><strong style="color:var(--blush)">Induction:</strong> charge rearranges without contact</li>
+            <li><strong style="color:var(--blush)">Conduction:</strong> charge transfers on direct contact</li>
+            <li>Earthing allows safe discharge to ground</li>
+            <li>Polarization: charge separates, object stays neutral</li>
+          </ul>
+        </div>
+      </div>
+      <div class="tcard">
+        <img class="tcard-photo" src="https://cdn.britannica.com/37/237-050-F67852BA/accelerator-Van-de-Graaff.jpg" alt="Van de Graaff Generator" onerror="this.style.height='60px';this.style.objectFit='contain';"/>
+        <div class="tcard-body">
+          <h3>🌐 Van de Graaff Generator</h3>
+          <p>Charges accumulate on a large metal sphere. Touch it and charge spreads over your body — each hair repels the others and stands up! Must stand on an insulating mat.</p>
+          <div class="fpill">E = kQs/r²  or  E = F/Qt</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MAGNETISM -->
+  <div id="tab-m" class="tab-content">
+    <div class="topic-panel">
+      <div class="tcard">
+        <img class="tcard-photo" src="https://centrepointschools.com/blogs/wp-content/uploads/2025/06/Magnetism00.jpg" onerror="this.style.height='60px';this.style.objectFit='contain';"/>
+        <div class="tcard-body">
+          <h3>🧲 Magnetic Field Lines</h3>
+          <p>Iron filings reveal the invisible magnetic field — densest near the poles. Field lines always run North → South outside the magnet.</p>
+          <ul>
+            <li>Strongest at the poles</li>
+            <li>Like poles repel; unlike poles attract</li>
+            <li>U-shaped magnet creates a uniform field</li>
+          </ul>
+        </div>
+      </div>
+      <div class="tcard">
+        <img class="tcard-photo" src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRiJROHG41icBt9KiQrOQsrJp0rnn713_2NKA&s" alt="Solenoid electromagnet" onerror="this.style.height='60px';this.style.objectFit='contain';"/>
+        <div class="tcard-body">
+          <h3>💡 Electromagnetism & Solenoids</h3>
+          <p>Pass current through a coil and it behaves like a bar magnet. Reverse the current, reverse the field. Increase current, strengthen the field.</p>
+          <ul>
+            <li>Current → circular field around wire</li>
+            <li>Solenoid acts like a bar magnet</li>
+            <li>Electromagnets: switchable & adjustable</li>
+          </ul>
+        </div>
+      </div>
+      <div class="tcard">
+        <img class="tcard-photo" src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/57/Magnet_and_compass.jpg/640px-Magnet_and_compass.jpg" alt="Magnet and compass" onerror="this.style.height='60px';this.style.objectFit='contain';"/>
+        <div class="tcard-body">
+          <h3>🧭 Types of Magnets</h3>
+          <ul>
+            <li><strong style="color:var(--blush)">Permanent:</strong> keeps magnetism long-term (steel)</li>
+            <li><strong style="color:var(--blush)">Temporary:</strong> magnetic only near a field (soft iron)</li>
+            <li>Magnetize: stroke, solenoid, or proximity</li>
+            <li>Demagnetize: heat, drop, or alternating field</li>
+            <li>Magnetic materials: iron, steel, nickel, cobalt</li>
+          </ul>
+        </div>
+      </div>
+      <div class="tcard">
+        <img class="tcard-photo" src="https://upload.wikimedia.org/wikipedia/commons/thumb/c/cd/Dipole_bar_magnet.svg/640px-Dipole_bar_magnet.svg.png" alt="Bar magnet dipole" onerror="this.style.height='60px';this.style.objectFit='contain';"/>
+        <div class="tcard-body">
+          <h3>📐 Magnetic Domains</h3>
+          <p>Deep inside magnetic materials, groups of atoms called domains share the same magnetic orientation. When enough align — the object becomes a magnet.</p>
+          <ul>
+            <li>Unaligned domains → no overall magnetism</li>
+            <li>Aligned domains → permanent magnet</li>
+            <li>Heat disrupts alignment → demagnetizes</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MEASUREMENT -->
+  <div id="tab-ms" class="tab-content">
+    <div class="topic-panel">
+      <div class="tcard">
+        <img class="tcard-photo" src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/ab/Metric_system_rulers.svg/640px-Metric_system_rulers.svg.png" alt="Metric rulers" onerror="this.style.height='60px';this.style.objectFit='contain';"/>
+        <div class="tcard-body">
+          <h3>📏 Length Measurement</h3>
+          <p>SI unit: meter (m). From nanometers (atoms) to kilometers (cities), each prefix scales by powers of 10.</p>
+          <ul>
+            <li>1 km = 1,000 m — between cities</li>
+            <li>1 cm = 0.01 m — everyday objects</li>
+            <li>1 mm = 0.001 m — fine details</li>
+            <li>1 µm = 10⁻⁶ m — cells & biology</li>
+            <li>1 nm = 10⁻⁹ m — atoms & nanotech</li>
+          </ul>
+        </div>
+      </div>
+      <div class="tcard">
+        <img class="tcard-photo" src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/21/Simple_thermometer.svg/300px-Simple_thermometer.svg.png" alt="Thermometer" onerror="this.style.height='60px';this.style.objectFit='contain';"/>
+        <div class="tcard-body">
+          <h3>🌡️ Temperature Scales</h3>
+          <p>Temperature measures average kinetic energy of particles. Three main scales are used worldwide.</p>
+          <ul>
+            <li>Celsius (°C): weather & daily use</li>
+            <li>Fahrenheit (°F): used in the USA</li>
+            <li>Kelvin (K): scientific calculations</li>
+          </ul>
+          <div class="fpill">K = °C + 273</div>
+        </div>
+      </div>
+      <div class="tcard">
+        <img class="tcard-photo" src="https://upload.wikimedia.org/wikipedia/commons/thumb/6/6e/Weigh_scale_MET_DP884092.jpg/640px-Weigh_scale_MET_DP884092.jpg" alt="Mass scale" onerror="this.style.height='60px';this.style.objectFit='contain';"/>
+        <div class="tcard-body">
+          <h3>⚖️ Mass</h3>
+          <p>Mass is the amount of matter in an object. SI unit: kilogram (kg). Mass is constant regardless of gravity — unlike weight.</p>
+          <ul>
+            <li>1 g = 0.001 kg — light objects</li>
+            <li>1 mg = 10⁻⁶ kg — medicines</li>
+            <li>1 tonne = 1,000 kg — heavy loads</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- THERMAL -->
+  <div id="tab-t" class="tab-content">
+    <div class="topic-panel">
+      <div class="tcard">
+        <img class="tcard-photo" src="https://upload.wikimedia.org/wikipedia/commons/thumb/1/1c/Hot_metalwork.jpg/640px-Hot_metalwork.jpg" alt="Hot metal thermal" onerror="this.style.height='60px';this.style.objectFit='contain';"/>
+        <div class="tcard-body">
+          <h3>🔥 Specific Heat Capacity</h3>
+          <p>Energy needed to raise 1 kg of a substance by 1°C. High SHC = heats slowly; low SHC = heats fast.</p>
+          <ul>
+            <li>Water: 4200 J/kg°C — stabilizes Earth's climate</li>
+            <li>Aluminium: 900 J/kg°C — heats up quickly</li>
+            <li>Used in car radiators & industrial cooling</li>
+            <li>Body's water helps regulate temperature</li>
+          </ul>
+          <div class="fpill">Q = mcΔT</div>
+        </div>
+      </div>
+      <div class="tcard">
+        <img class="tcard-photo" src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/a5/Melting_icecubes.gif/320px-Melting_icecubes.gif" alt="Melting ice" onerror="this.src='https://upload.wikimedia.org/wikipedia/commons/thumb/4/47/PNG_transparency_demonstration_1.png/280px-PNG_transparency_demonstration_1.png';"/>
+        <div class="tcard-body">
+          <h3>❄️ Specific Latent Heat</h3>
+          <p>During a phase change, temperature stays constant — all energy breaks molecular bonds instead.</p>
+          <ul>
+            <li>Fusion (Lf): solid → liquid</li>
+            <li>Vaporization (Lv): liquid → gas</li>
+            <li>Sweating uses Lv to cool the body</li>
+            <li>Fridge/AC use evaporation cycles</li>
+          </ul>
+          <div class="fpill">Q = mL</div>
+        </div>
+      </div>
+      <div class="tcard">
+        <img class="tcard-photo" src="https://upload.wikimedia.org/wikipedia/commons/thumb/1/14/Convection-snapshot.gif/320px-Convection-snapshot.gif" alt="Convection currents" onerror="this.style.height='60px';this.style.objectFit='contain';"/>
+        <div class="tcard-body">
+          <h3>🌊 Heat Transfer</h3>
+          <ul>
+            <li><strong style="color:var(--blush)">Conduction:</strong> direct contact (metals)</li>
+            <li><strong style="color:var(--blush)">Convection:</strong> fluid movement (boiling water)</li>
+            <li><strong style="color:var(--blush)">Radiation:</strong> electromagnetic waves (sunlight)</li>
+          </ul>
+          <div class="fpill">PV = nRT (Ideal Gas)</div>
+        </div>
+      </div>
+      <div class="tcard">
+        <img class="tcard-photo" src="https://upload.wikimedia.org/wikipedia/commons/thumb/9/9a/Thermodynamic_entropy_example_cropped.jpg/640px-Thermodynamic_entropy_example_cropped.jpg" alt="Thermal equilibrium" onerror="this.style.height='60px';this.style.objectFit='contain';"/>
+        <div class="tcard-body">
+          <h3>🌡️ Temperature & Heat</h3>
+          <ul>
+            <li>Temperature = average kinetic energy of particles</li>
+            <li>Higher temp → particles move faster</li>
+            <li>Heat flows from hot → cold</li>
+            <li>Thermal equilibrium: temperatures equalise</li>
+            <li>Unit of heat: Joule (J)</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="line-div"></div>
+
+<!-- FORMULAS -->
+<div id="formulas" class="section">
+  <div class="sec-label">Quick Reference</div>
+  <div class="sec-title">Key Formulas ✦</div>
+  <p class="sec-desc">Every equation you need, beautifully at a glance.</p>
+  <div class="formula-grid">
+    <div class="fcard">
+      <div class="fcard-emoji">⚡</div>
+      <h4>Coulomb's Law</h4>
+      <div class="fcard-eq">F = kq₁q₂/r²</div>
+      <p>k = 9×10⁹ N·m²/C²<br/>q = charge (C) · r = distance (m)</p>
+    </div>
+    <div class="fcard">
+      <div class="fcard-emoji">🌐</div>
+      <h4>Electric Field</h4>
+      <div class="fcard-eq">E = kQs/r²</div>
+      <p>Also: E = F/Qt<br/>Unit: N/C or V/m</p>
+    </div>
+    <div class="fcard">
+      <div class="fcard-emoji">🔥</div>
+      <h4>Specific Heat Capacity</h4>
+      <div class="fcard-eq">Q = mcΔT</div>
+      <p>m = mass (kg) · c = SHC (J/kg°C)<br/>ΔT = temperature change</p>
+    </div>
+    <div class="fcard">
+      <div class="fcard-emoji">❄️</div>
+      <h4>Specific Latent Heat</h4>
+      <div class="fcard-eq">Q = mL</div>
+      <p>L = latent heat (J/kg)<br/>No temp change during phase change</p>
+    </div>
+    <div class="fcard">
+      <div class="fcard-emoji">🌡️</div>
+      <h4>Temperature Conversion</h4>
+      <div class="fcard-eq">K = °C + 273</div>
+      <p>°F = (9/5 × °C) + 32<br/>Kelvin is always ≥ 0</p>
+    </div>
+    <div class="fcard">
+      <div class="fcard-emoji">💨</div>
+      <h4>Ideal Gas Law</h4>
+      <div class="fcard-eq">PV = nRT</div>
+      <p>P = pressure · V = volume<br/>n = moles · R = 8.314 J/mol·K</p>
+    </div>
+  </div>
+</div>
+
+<div class="line-div"></div>
+
+<!-- EXERCISES -->
+<div id="exercises" class="section">
+  <div class="sec-label">Practice</div>
+  <div class="sec-title">Exercise Questions 💕</div>
+  <p class="sec-desc">Click each question to reveal the full worked solution. Try solving it yourself first!</p>
+  <div class="ex-list">
+    <div class="ex-card" onclick="tog(this)">
+      <div class="ex-head">
+        <div class="ex-q">Q1 — Aluminum block: 2 kg, heated 25°C → 35°C, c = 900 J/kg°C</div>
+        <div class="ex-meta"><span class="ex-tag">SHC</span><span class="chev">▼</span></div>
+      </div>
+      <div class="ex-body">
+        Formula: Q = mcΔT · ΔT = 35 − 25 = 10°C<br/>Q = 2 × 900 × 10
+        <div class="ex-ans">✅ Q = 18,000 J</div>
+      </div>
+    </div>
+    <div class="ex-card" onclick="tog(this)">
+      <div class="ex-head">
+        <div class="ex-q">Q2 — 500 g water heated 20°C → 60°C, c = 4200 J/kg°C</div>
+        <div class="ex-meta"><span class="ex-tag">SHC</span><span class="chev">▼</span></div>
+      </div>
+      <div class="ex-body">
+        Convert: 500 g = 0.5 kg · ΔT = 40°C<br/>Q = 0.5 × 4200 × 40
+        <div class="ex-ans">✅ Q = 84,000 J</div>
+      </div>
+    </div>
+    <div class="ex-card" onclick="tog(this)">
+      <div class="ex-head">
+        <div class="ex-q">Q3 — Melt 3 kg of ice at 0°C (Lf = 334,000 J/kg)</div>
+        <div class="ex-meta"><span class="ex-tag">Latent Heat</span><span class="chev">▼</span></div>
+      </div>
+      <div class="ex-body">
+        Q = mL = 3 × 334,000
+        <div class="ex-ans">✅ Q = 1,002,000 J = 1.002 × 10⁶ J</div>
+      </div>
+    </div>
+    <div class="ex-card" onclick="tog(this)">
+      <div class="ex-head">
+        <div class="ex-q">Q4 — 2 kg water → steam at 100°C (Lv = 2,260,000 J/kg)</div>
+        <div class="ex-meta"><span class="ex-tag">Latent Heat</span><span class="chev">▼</span></div>
+      </div>
+      <div class="ex-body">
+        Q = mL = 2 × 2,260,000
+        <div class="ex-ans">✅ Q = 4,520,000 J = 4.52 × 10⁶ J</div>
+      </div>
+    </div>
+    <div class="ex-card" onclick="tog(this)">
+      <div class="ex-head">
+        <div class="ex-q">Q5 — Melt 1 kg ice at 0°C then heat water to 20°C (combined)</div>
+        <div class="ex-meta"><span class="ex-tag">Combined</span><span class="chev">▼</span></div>
+      </div>
+      <div class="ex-body">
+        Step 1 – Melt ice: Q₁ = 1 × 334,000 = 334,000 J<br/>
+        Step 2 – Heat 0→20°C: Q₂ = 1 × 4200 × 20 = 84,000 J<br/>
+        Step 3 – Total: Q = Q₁ + Q₂
+        <div class="ex-ans">✅ Q_total = 418,000 J</div>
+      </div>
+    </div>
+    <div class="ex-card" onclick="tog(this)">
+      <div class="ex-head">
+        <div class="ex-q">Q6 — Why does water heat up slower than metal?</div>
+        <div class="ex-meta"><span class="ex-tag">Concept</span><span class="chev">▼</span></div>
+      </div>
+      <div class="ex-body">
+        <div class="ex-ans">✅ Water has a very high SHC (4200 J/kg°C) vs metals (~400–900). It needs far more energy to raise its temperature by 1°C.</div>
+      </div>
+    </div>
+    <div class="ex-card" onclick="tog(this)">
+      <div class="ex-head">
+        <div class="ex-q">Q7 — Why does sweating cool the body?</div>
+        <div class="ex-meta"><span class="ex-tag">Concept</span><span class="chev">▼</span></div>
+      </div>
+      <div class="ex-body">
+        <div class="ex-ans">✅ Sweat evaporation absorbs large heat from skin due to water's high Specific Latent Heat of Vaporization, carrying thermal energy away and cooling the body.</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="line-div"></div>
+
+<!-- TEAM -->
+<div id="team" class="section">
+  <div class="sec-label">Authors</div>
+  <div class="sec-title">Our Team 🩷</div>
+  <p class="sec-desc">Grade 9B · Santa Laurensia Junior High School · 2025/2026</p>
+  <div class="team-grid">
+    <div class="team-card">
+      <div class="ava">👩‍💻</div>
+      <div class="team-name">Jacelyn Lee</div>
+      <div class="team-no">No. Absen 13</div>
+      <div class="role-pills"><span class="role-pill">Coding</span><span class="role-pill">Physics</span></div>
+    </div>
+    <div class="team-card">
+      <div class="ava">🌸</div>
+      <div class="team-name">Bae Sohee</div>
+      <div class="team-no">No. Absen 04</div>
+      <div class="role-pills"><span class="role-pill">Coding</span><span class="role-pill">Physics</span></div>
+    </div>
+    <div class="team-card">
+      <div class="ava">⚡</div>
+      <div class="team-name">Kinara Renta Lee</div>
+      <div class="team-no">No. Absen 18</div>
+      <div class="role-pills"><span class="role-pill">Physics</span><span class="role-pill">Coding</span></div>
+    </div>
+    <div class="team-card">
+      <div class="ava">🔬</div>
+      <div class="team-name">Emily Tjiptawan</div>
+      <div class="team-no">No. Absen 10</div>
+      <div class="role-pills"><span class="role-pill">Physics</span><span class="role-pill">Coding</span></div>
+    </div>
+  </div>
+</div>
+
+<footer>
+  <div style="font-size:1.8rem;margin-bottom:.6rem">✦ 🩷 ✦</div>
+  <strong>Physics AP · Chapter 4 & 5</strong><br/>
+  Santa Laurensia Junior High School · Class 9B · 2025/2026<br/>
+  <span style="color:var(--rose)">Jacelyn Lee · Bae Sohee · Kinara Renta Lee · Emily Tjiptawan</span>
+</footer>
+
+<script>
+// Custom cursor
+const cur=document.getElementById('cur'), ring=document.getElementById('ring');
+let mx=0,my=0,rx=0,ry=0;
+document.addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY;cur.style.left=mx+'px';cur.style.top=my+'px';});
+function animRing(){rx+=(mx-rx)*.12;ry+=(my-ry)*.12;ring.style.left=rx+'px';ring.style.top=ry+'px';requestAnimationFrame(animRing);}
+animRing();
+
+// Sparkles in hero
+const sc=document.getElementById('sparkles');
+['✦','✧','★','✿','♡','⊹','·'].forEach((sym,i)=>{
+  for(let j=0;j<4;j++){
+    const s=document.createElement('span');
+    s.className='spark';s.textContent=sym;
+    s.style.cssText=`left:${Math.random()*100}%;top:${Math.random()*100}%;animation-duration:${3+Math.random()*5}s;animation-delay:${Math.random()*6}s;font-size:${.45+Math.random()*.65}rem;`;
+    sc.appendChild(s);
+  }
+});
+
+// Tabs
+function showTab(id,btn){
+  document.querySelectorAll('.tab-content').forEach(el=>el.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+  document.getElementById('tab-'+id).classList.add('active');
+  btn.classList.add('active');
+}
+
+// Exercises
+function tog(card){
+  card.querySelector('.ex-body').classList.toggle('open');
+  card.querySelector('.chev').classList.toggle('open');
+}
+</script>
+</body>
+</html>
